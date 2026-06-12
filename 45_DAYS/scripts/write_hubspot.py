@@ -4,12 +4,15 @@ import os
 import json
 import logging
 import html
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone
 
 from hubspot import HubSpot
 from hubspot.crm.contacts import SimplePublicObjectInput
 from hubspot.crm.contacts.exceptions import ApiException
 import requests
+from tenacity import retry
+
+from retry_utils import RETRY_KWARGS, write_dlq
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("write_hubspot")
@@ -69,6 +72,7 @@ def build_properties_payload(campaign, today):
     return props
 
 
+@retry(**RETRY_KWARGS)
 def write_properties(client, contact_id, properties):
     log.info(f"Writing {len(properties)} properties to contact {contact_id}: {list(properties.keys())}")
     client.crm.contacts.basic_api.update(
@@ -148,14 +152,19 @@ if __name__ == "__main__":
     contact_email = os.environ["INPUT_CONTACT_EMAIL"]
     hubspot_key = os.environ["HUBSPOT_API_KEY"]
 
-    client = HubSpot(access_token=hubspot_key)
-    campaign = load_campaign_output(runner_temp)
-    today_iso = datetime.now(timezone.utc).date().isoformat()
+    try:
+        client = HubSpot(access_token=hubspot_key)
+        campaign = load_campaign_output(runner_temp)
+        today_iso = datetime.now(timezone.utc).date().isoformat()
 
-    props_payload = build_properties_payload(campaign, today_iso)
-    write_properties(client, contact_id, props_payload)
-    log.info(f"Wrote {len(props_payload)} properties to contact {contact_id}")
+        props_payload = build_properties_payload(campaign, today_iso)
+        write_properties(client, contact_id, props_payload)
+        log.info(f"Wrote {len(props_payload)} properties to contact {contact_id}")
 
-    note_html = build_note_html(campaign, contact_email, today_iso)
-    create_note_engagement(contact_id, note_html, hubspot_key)
-    log.info(f"Pipeline complete for contact {contact_id} ({contact_email})")
+        note_html = build_note_html(campaign, contact_email, today_iso)
+        create_note_engagement(contact_id, note_html, hubspot_key)
+        log.info(f"Pipeline complete for contact {contact_id} ({contact_email})")
+
+    except Exception as exc:
+        write_dlq(contact_id, contact_email, "write_hubspot", exc)
+        raise

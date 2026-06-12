@@ -60,3 +60,16 @@ jobs:
           path: ${{ runner.temp }}/campaign_output.json
           retention-days: 7
           if-no-files-found: error
+
+      - name: Upload failure artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-contacts
+          path: ${{ runner.temp }}/failed_contacts.json
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Notify failure
+        if: failure()
+        run: python scripts/notify_failure.py

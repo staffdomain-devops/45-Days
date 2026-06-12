@@ -3,11 +3,13 @@
 import os
 import re
 import json
-import sys
 import logging
 from pathlib import Path
 
 from anthropic import Anthropic
+from tenacity import retry
+
+from retry_utils import RETRY_KWARGS, write_dlq
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("generate_campaign")
@@ -143,6 +145,7 @@ def validate_output(data):
         raise ValueError(f"sdr_call_notes missing required keys: {missing_sdr}")
 
 
+@retry(**RETRY_KWARGS)
 def call_claude(rendered_prompt):
     client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], max_retries=0)
     resp = client.messages.create(
@@ -160,30 +163,37 @@ def call_claude(rendered_prompt):
             raw = raw[4:].lstrip()
     try:
         return json.loads(raw)
-    except json.JSONDecodeError as exc:
+    except json.JSONDecodeError:
         log.error(f"Claude response was not valid JSON. First 500 chars:\n{raw[:500]}")
         raise
 
 
 if __name__ == "__main__":
     runner_temp = os.environ.get("RUNNER_TEMP", ".")
-    hubspot, transcripts, tokens = load_inputs(runner_temp)
+    contact_id = os.environ.get("INPUT_CONTACT_ID", "unknown")
+    contact_email = os.environ.get("INPUT_CONTACT_EMAIL", "unknown")
 
-    activity_history = assemble_activity_history(hubspot, transcripts)
+    try:
+        hubspot, transcripts, tokens = load_inputs(runner_temp)
 
-    template_path = Path(__file__).resolve().parent.parent / "prompt_template.md"
-    template = template_path.read_text(encoding="utf-8")
-    rendered = substitute_tokens(template, hubspot["contact_properties"], activity_history, tokens)
+        activity_history = assemble_activity_history(hubspot, transcripts)
 
-    log.info(f"Rendered prompt: {len(rendered)} chars, {len(activity_history)} chars of activity history")
+        template_path = Path(__file__).resolve().parent.parent / "prompt_template.md"
+        template = template_path.read_text(encoding="utf-8")
+        rendered = substitute_tokens(template, hubspot["contact_properties"], activity_history, tokens)
 
-    log.info(f"Calling Claude model={MODEL}, max_tokens={MAX_TOKENS}, prompt_chars={len(rendered)}")
-    raw_output = call_claude(rendered)
+        log.info(f"Rendered prompt: {len(rendered)} chars, {len(activity_history)} chars of activity history")
+        log.info(f"Calling Claude model={MODEL}, max_tokens={MAX_TOKENS}, prompt_chars={len(rendered)}")
 
-    output = strip_banned_punctuation(raw_output)
-    validate_output(output)
+        raw_output = call_claude(rendered)
+        output = strip_banned_punctuation(raw_output)
+        validate_output(output)
 
-    out_path = os.path.join(runner_temp, "campaign_output.json")
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(output, f, indent=2, ensure_ascii=False)
-    log.info(f"Wrote {out_path} — {len(output)} top-level keys")
+        out_path = os.path.join(runner_temp, "campaign_output.json")
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(output, f, indent=2, ensure_ascii=False)
+        log.info(f"Wrote {out_path} — {len(output)} top-level keys")
+
+    except Exception as exc:
+        write_dlq(contact_id, contact_email, "generate_campaign", exc)
+        raise
