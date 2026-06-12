@@ -107,56 +107,56 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TRIG-01 | TBD | Pending |
-| TRIG-02 | TBD | Pending |
-| TRIG-03 | TBD | Pending |
-| PIPE-01 | TBD | Pending |
-| PIPE-02 | TBD | Pending |
-| PIPE-03 | TBD | Pending |
-| PIPE-04 | TBD | Pending |
-| PIPE-05 | TBD | Pending |
-| PIPE-06 | TBD | Pending |
-| PIPE-07 | TBD | Pending |
-| HS-01 | TBD | Pending |
-| HS-02 | TBD | Pending |
-| HS-03 | TBD | Pending |
-| HS-04 | TBD | Pending |
-| HS-05 | TBD | Pending |
-| HS-06 | TBD | Pending |
-| HS-07 | TBD | Pending |
-| CHO-01 | TBD | Pending |
-| CHO-02 | TBD | Pending |
-| CHO-03 | TBD | Pending |
-| CHO-04 | TBD | Pending |
-| TOK-01 | TBD | Pending |
-| TOK-02 | TBD | Pending |
-| AI-01 | TBD | Pending |
-| AI-02 | TBD | Pending |
-| AI-03 | TBD | Pending |
-| AI-04 | TBD | Pending |
-| AI-05 | TBD | Pending |
-| AI-06 | TBD | Pending |
-| AI-07 | TBD | Pending |
-| WR-01 | TBD | Pending |
-| WR-02 | TBD | Pending |
-| WR-03 | TBD | Pending |
-| WR-04 | TBD | Pending |
-| WR-05 | TBD | Pending |
-| WR-06 | TBD | Pending |
-| ERR-01 | TBD | Pending |
-| ERR-02 | TBD | Pending |
-| ERR-03 | TBD | Pending |
-| ERR-04 | TBD | Pending |
-| ERR-05 | TBD | Pending |
-| INFRA-01 | TBD | Pending |
-| INFRA-02 | TBD | Pending |
-| INFRA-03 | TBD | Pending |
+| TRIG-01 | Phase 4 | Pending |
+| TRIG-02 | Phase 4 | Pending |
+| TRIG-03 | Phase 1 | Pending |
+| PIPE-01 | Phase 1 | Pending |
+| PIPE-02 | Phase 1 | Pending |
+| PIPE-03 | Phase 1 | Pending |
+| PIPE-04 | Phase 1 | Pending |
+| PIPE-05 | Phase 3 | Pending |
+| PIPE-06 | Phase 3 | Pending |
+| PIPE-07 | Phase 1 | Pending |
+| HS-01 | Phase 1 | Pending |
+| HS-02 | Phase 1 | Pending |
+| HS-03 | Phase 1 | Pending |
+| HS-04 | Phase 1 | Pending |
+| HS-05 | Phase 1 | Pending |
+| HS-06 | Phase 1 | Pending |
+| HS-07 | Phase 1 | Pending |
+| CHO-01 | Phase 2 | Pending |
+| CHO-02 | Phase 2 | Pending |
+| CHO-03 | Phase 2 | Pending |
+| CHO-04 | Phase 2 | Pending |
+| TOK-01 | Phase 1 | Pending |
+| TOK-02 | Phase 1 | Pending |
+| AI-01 | Phase 1 | Pending |
+| AI-02 | Phase 1 | Pending |
+| AI-03 | Phase 1 | Pending |
+| AI-04 | Phase 1 | Pending |
+| AI-05 | Phase 1 | Pending |
+| AI-06 | Phase 1 | Pending |
+| AI-07 | Phase 1 | Pending |
+| WR-01 | Phase 1 | Pending |
+| WR-02 | Phase 1 | Pending |
+| WR-03 | Phase 1 | Pending |
+| WR-04 | Phase 1 | Pending |
+| WR-05 | Phase 1 | Pending |
+| WR-06 | Phase 1 | Pending |
+| ERR-01 | Phase 3 | Pending |
+| ERR-02 | Phase 3 | Pending |
+| ERR-03 | Phase 3 | Pending |
+| ERR-04 | Phase 3 | Pending |
+| ERR-05 | Phase 3 | Pending |
+| INFRA-01 | Phase 1 | Pending |
+| INFRA-02 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 43 total
-- Mapped to phases: 0 (traceability updated after roadmap creation)
-- Unmapped: 43 ⚠️
+- Mapped to phases: 43 ✓
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-12*
-*Last updated: 2026-06-12 after initial definition*
+*Last updated: 2026-06-12 after roadmap creation*
