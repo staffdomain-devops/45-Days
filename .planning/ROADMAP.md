@@ -32,7 +32,12 @@
   2. A new HubSpot note engagement appears on the contact after each run, containing the campaign brief and SDR call notes in rich HTML format
   3. The campaign_output.json artifact is visible in GitHub Actions with 7-day retention after a successful run
   4. All inter-step data (hubspot_contact.json, campaign_tokens.json, campaign_output.json) is written to and read from $RUNNER_TEMP — no step shares in-memory state with another
-**Plans:** TBD
+**Plans:** 5 plans
+  - [ ] 01-01-PLAN.md — Project scaffold, GitHub Actions workflow YAML, requirements.txt, prompt template stub
+  - [ ] 01-02-PLAN.md — fetch_hubspot.py: contact properties, email/meeting history, deal stage, owner resolution, Chorus ID extraction
+  - [ ] 01-03-PLAN.md — compute_campaign_tokens.py + fetch_chorus.py (Phase 1 stub)
+  - [ ] 01-04-PLAN.md — generate_campaign.py: token substitution, Claude API call, JSON validation, output writing
+  - [ ] 01-05-PLAN.md — write_hubspot.py: 7 subjects + 7 bodies + SDR notes + note engagement
 
 ### Phase 2: Chorus AI Integration
 **Goal:** Enrich campaign personalisation with call transcript data from Chorus AI — pipeline must continue gracefully if Chorus is unavailable.
